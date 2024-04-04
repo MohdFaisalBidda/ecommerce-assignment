@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CreatePost } from "~/app/_components/create-post";
 import { api } from "~/trpc/server";
 import Navbar from "../components/Navbar";
+import Register from "~/components/Register";
 import Login from "~/components/Login";
 
 export default async function Home() {

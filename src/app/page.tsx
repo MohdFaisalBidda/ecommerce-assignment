@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar";
 import Register from "~/components/Register";
 import Login from "~/components/Login";
 import VerifyEmail from "~/components/VerifyEmail";
+import InterestsCard from "~/components/InterestsCard";
 
 export default async function Home() {
   // const hello = await api.post.hello({ text: "from tRPC" });
@@ -13,7 +14,7 @@ export default async function Home() {
   return (
     <>
       <Navbar />
-      <VerifyEmail />
+      <InterestsCard />
     </>
   );
 }

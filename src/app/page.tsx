@@ -9,7 +9,7 @@ import VerifyEmail from "~/components/VerifyEmail";
 import InterestsCard from "~/components/InterestsCard";
 
 export default async function Home() {
-  // const hello = await api.post.hello({ text: "from tRPC" });
+  // const hello = await api.auth.hello({ text: "from tRPC" });
 
   return (
     <>

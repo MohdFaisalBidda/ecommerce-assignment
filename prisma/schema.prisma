@@ -10,11 +10,23 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
+model User {
+    id                Int                 @id @default(autoincrement())
+    name              String
+    email             String              @unique
+    password          String
+    createdAt         DateTime            @default(now())
+    updatedAt         DateTime            @updatedAt
+    EmailVerification EmailVerification[]
+}
+
+model EmailVerification {
     id        Int      @id @default(autoincrement())
-    name      String
+    email     String
+    otp       String   @unique
+    verified  Boolean  @default(false)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    @@index([name])
+    user User? @relation(fields: [email], references: [email])
 }

@@ -1,16 +1,19 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { api } from "~/trpc/react";
 import { FaSpinner } from "react-icons/fa6";
+import { AuthContext } from "~/contexts/AuthContext";
+import Navbar from "./Navbar";
 
 function Login() {
   const [cred, setCred] = useState({ email: "", password: "" });
   const [hide, setHide] = useState(true);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { login } = useContext(AuthContext);
   const loginUserMutation = api.auth.login.useMutation();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,19 +30,24 @@ function Login() {
     try {
       console.log(cred);
       setLoading(true);
-      await loginUserMutation.mutateAsync(cred);
-      setCred({ email: "", password: "" });
+      const userData = await loginUserMutation.mutateAsync(cred);
       toast.success("User logged in Successfully!");
+      login(userData);
+      if (typeof window === "undefined") return null;
+      localStorage.setItem("user", JSON.stringify(userData));
+      setCred({ email: "", password: "" });
       router.push("/");
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       setLoading(false);
       console.log(error);
-      toast.error(error.shape.message)
+      toast.error(error.shape.message);
     }
   };
 
   return (
+    <>
+    <Navbar />
     <div className="my-10 flex w-full items-center justify-center">
       <div className="h-full max-h-[691px] w-full max-w-[576px] rounded-[20px] border border-[#C1C1C1] p-14">
         <h1 className="mb-8 text-center text-[32px] font-semibold">Login</h1>
@@ -111,6 +119,7 @@ function Login() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

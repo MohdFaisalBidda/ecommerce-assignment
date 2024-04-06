@@ -31,13 +31,34 @@ export const authRouter = createTRPCRouter({
       if (!existingUser || existingUser.password !== input.password) {
         throw new Error('Invalid email or password')
       }
+      return { user: input }
+    }),
+
+  sendVerificationOTP: publicProcedure
+    .input(z.object({ email: z.string().email() }))
+    .mutation(async ({ input }) => {
+      //send otp to email use any email service provider
 
       return { success: true }
-    })
+    }),
 
-  // getLatest: publicProcedure.query(({ ctx }) => {
-  //   return ctx.db.post.findFirst({
-  //     orderBy: { createdAt: "desc" },
-  //   });
-  // }),
+  verifyEmailWithOTP: publicProcedure
+    .input(z.object({ email: z.string().email(), otp: z.string() }))
+    .mutation(async ({ input }) => {
+      //verify otp send to email
+
+      return { success: true }
+    }),
+
+  getUserDetails: publicProcedure
+    .query(async ({ ctx }) => {
+      const user = ctx
+      if (!user) {
+        throw new Error('User not authenticated')
+      }
+
+      return {
+       ctx
+      };
+    })
 });

@@ -6,6 +6,9 @@ import { TRPCReactProvider } from "~/trpc/react";
 import Navbar from "~/components/Navbar";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { AuthProvider } from "~/contexts/AuthContext";
+import WrapperComponent from "~/components/WrapperComponent";
+import { Suspense } from "react";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,9 +30,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
         <TRPCReactProvider>
-          <ToastContainer position="bottom-right" />
-          <Navbar />
-          {children}
+          <AuthProvider>
+              <ToastContainer position="bottom-right" />
+            <WrapperComponent>
+              {children}
+            </WrapperComponent>
+          </AuthProvider>
         </TRPCReactProvider>
       </body>
     </html>

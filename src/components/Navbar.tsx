@@ -1,12 +1,16 @@
-import React from "react";
+"use client";
+import React, { useContext } from "react";
 import { LuShoppingCart } from "react-icons/lu";
 import { FiSearch } from "react-icons/fi";
 import {
   MdOutlineKeyboardArrowLeft,
   MdOutlineKeyboardArrowRight,
 } from "react-icons/md";
+import { deleteLocalStorageKeyValue } from "~/utils/localstorage";
+import { useRouter } from "next/navigation";
 
-function Navbar() {
+function Navbar() { 
+  const router =useRouter()
   return (
     <>
       <div className="flex h-[100px] w-full flex-col justify-between bg-white py-4 lg:px-16">
@@ -14,7 +18,12 @@ function Navbar() {
           <ul className="flex w-full items-center justify-end gap-x-10">
             <li className="text-xs font-normal">Help</li>
             <li className="text-xs font-normal">Orders & Returns</li>
-            <li className="text-xs font-normal">Hi,John</li>
+            <li onClick={()=>{
+              deleteLocalStorageKeyValue("user")
+              router.push("/login")
+            }} className="text-xs font-normal">
+              Hi,John
+            </li>
           </ul>
         </div>
         <div className="flex h-full items-center justify-between px-4 pt-4 lg:px-0">

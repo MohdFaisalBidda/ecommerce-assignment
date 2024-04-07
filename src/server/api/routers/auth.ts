@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
   port: 25,
 });
 
-async function sendOTP(email, otp) {
+async function sendOTP(email:string, otp:any) {
   const mailOptions = {
     from: "notify@example.com",
     to: email,
@@ -36,7 +36,7 @@ export const authRouter = createTRPCRouter({
         throw new Error('User with this email already exists!')
       }
 
-      await db.user.create<Prisma.UserCreateInput>({
+      await db.user.create({
         data: {
           name: input.name,
           email: input.email,

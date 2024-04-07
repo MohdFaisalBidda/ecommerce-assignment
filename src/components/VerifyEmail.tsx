@@ -10,7 +10,7 @@ import { getLocalStorageKeyValue } from "~/utils/localstorage";
 function VerifyEmail() {
   const router = useRouter();
   const queryParams = useSearchParams();
-  const otpData = queryParams.get("otpData");
+  const otpData:any = queryParams.get("otpData");
   const parsedData = JSON.parse(otpData);
   console.log("otpData:", parsedData.success);
   const user = getLocalStorageKeyValue("user");

@@ -106,7 +106,7 @@ function InterestsCard() {
   }, [checkedItemsPerPage]);
 
   const handleCheckboxChange = (index: number) => {
-    setCheckedItemsPerPage((prevState) => {
+    setCheckedItemsPerPage((prevState:any) => {
       const currentPageCheckedItems = [
         ...(prevState[currPage] || Array(itemsPerPage).fill(false))
       ];

@@ -1,13 +1,13 @@
-export function getLocalStorageKeyValue(key){
+export function getLocalStorageKeyValue(key:any){
     try {
-        const data = localStorage.getItem(key);
+        const data:any = localStorage.getItem(key);
         return JSON.parse(data);
     } catch (error) {
         console.error(`Error getting item from Localstorage ${error}`);
     }
 }
 
-export function setLocalStorageKeyValue(key,value){
+export function setLocalStorageKeyValue(key:any,value:any){
     try {
         const data =localStorage.setItem(key,value);
         // return JSON.parse(data);
@@ -16,7 +16,7 @@ export function setLocalStorageKeyValue(key,value){
     }
 }
 
-export function deleteLocalStorageKeyValue(key){
+export function deleteLocalStorageKeyValue(key:any){
     try {
         localStorage.removeItem(key);
     } catch (error) {

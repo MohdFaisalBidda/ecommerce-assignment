@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { AuthContext } from "../contexts/AuthContext";
+// import { AuthContext } from "../contexts/AuthContext";
 import { useContext, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { getLocalStorageKeyValue } from "~/utils/localstorage";

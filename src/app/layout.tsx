@@ -6,7 +6,7 @@ import { TRPCReactProvider } from "~/trpc/react";
 import Navbar from "~/components/Navbar";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-import { AuthProvider } from "~/contexts/AuthContext";
+// import { AuthProvider } from "~/contexts/AuthContext";
 import WrapperComponent from "~/components/WrapperComponent";
 import { Suspense } from "react";
 
@@ -30,12 +30,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
         <TRPCReactProvider>
-          <AuthProvider>
+          {/* <AuthProvider> */}
               <ToastContainer position="bottom-right" />
             <WrapperComponent>
               {children}
             </WrapperComponent>
-          </AuthProvider>
+          {/* </AuthProvider> */}
         </TRPCReactProvider>
       </body>
     </html>

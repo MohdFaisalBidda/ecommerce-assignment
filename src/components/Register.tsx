@@ -28,7 +28,7 @@ function Register() {
       console.log(cred);
       setLoading(true);
       await registerUserMutation.mutateAsync(cred);
-      router.push("/");
+      router.push("/VerifyEmail");
       setCred({ name: "", email: "", password: "" });
       toast.success("User created Successfully!");
       setLoading(false);

@@ -1,9 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoMdCheckmark } from "react-icons/io";
+import { api } from "~/trpc/react";
+import {
+  getLocalStorageKeyValue,
+  setLocalStorageKeyValue,
+} from "~/utils/localstorage";
 
 function InterestsCard() {
+  const user = getLocalStorageKeyValue("user");
+  console.log(user?.user?.email);
+
   const data = [
     { title: "Wireless Bluetooth Earbuds" },
     { title: "Portable External Hard Drive 1TB" },
@@ -79,31 +87,58 @@ function InterestsCard() {
     return pagination;
   };
 
-  const [checkedItems, setCheckedItems] = useState({});
+  const [checkedItemsPerPage, setCheckedItemsPerPage] = useState(() => {
+    const storedCheckedItemsPerPage =
+      getLocalStorageKeyValue("checkedItemsPerPage") || {};
+    return storedCheckedItemsPerPage;
+  });
 
-  const handleCheckboxChange = (index:any) => {
-    setCheckedItems((prevState) => (
-       !prevState[index]
-    ));
+  useEffect(() => {
+    setLocalStorageKeyValue(
+      "checkedItemsPerPage",
+      JSON.stringify(checkedItemsPerPage),
+    );
+  }, [checkedItemsPerPage]);
+
+  const handleCheckboxChange = (index: number) => {
+    setCheckedItemsPerPage((prevState) => {
+      console.log("prevState:", prevState);
+      const currentPageCheckedItems = [...(prevState[currPage] || Array(itemsPerPage).fill(false))];
+      console.log("currentPageCheckedItems (before):", currentPageCheckedItems);
+      currentPageCheckedItems[index] = !currentPageCheckedItems[index];
+      console.log("currentPageCheckedItems (after):", currentPageCheckedItems);
+      
+      const updatedState = { ...prevState, [currPage]: currentPageCheckedItems };
+      console.log("updatedState:", updatedState);
+      setLocalStorageKeyValue("checkedItemsPerPage", JSON.stringify(updatedState));
+      
+      return updatedState;
+    });
   };
 
   const renderItems = () => {
     const startIndex = (currPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     return data.slice(startIndex, endIndex).map((item, i) => (
-      <li className="flex items-center gap-x-2 relative" key={i}>
+      <li className="relative flex items-center gap-x-2" key={i}>
         <input
           type="checkbox"
           id={`checkbox-${i}`}
-          className="h-6 w-6 appearance-none rounded border border-gray-300 bg-[#CCCCCC] checked:border-transparent checked:bg-black focus:outline-none"
+          className={`h-6 w-6 appearance-none rounded border border-gray-300 ${
+            checkedItemsPerPage[currPage] && checkedItemsPerPage[currPage][i]
+              ? "bg-black checked:border-transparent checked:bg-black"
+              : "bg-[#CCCCCC] checked:border-transparent"
+          } focus:outline-none`}
           onChange={() => handleCheckboxChange(i)}
-          checked={checkedItems[i]}
+          checked={
+            checkedItemsPerPage[currPage]?.[i] || false
+          }
         />
-     {checkedItems[i] && (
-            <div className="absolute top-0 left-0 flex items-center justify-center">
-              <IoMdCheckmark className="text-white w-6 h-6" />
-            </div>
-          )}
+        {checkedItemsPerPage[currPage] && checkedItemsPerPage[currPage][i] && (
+          <div className="absolute left-0 top-0 flex items-center justify-center">
+            <IoMdCheckmark className="h-6 w-6 text-white" />
+          </div>
+        )}
         <span className="text-base font-normal text-black">{item.title}</span>
       </li>
     ));

@@ -1,8 +1,36 @@
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
+import nodemailer from 'nodemailer';
+
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { db } from "~/server/db";
+
+const transporter = nodemailer.createTransport({
+  host: 'smtp.tickpluswise.com',
+  port: 587,
+  secure: false,
+  auth: {
+    user: 'user-e89730d4bf88484d',
+    pass: 'f7(fXX22G<upi@FHNW@8rHUhV5obH%=SM8/?<a^@TX$y%62{YH',
+  },
+});
+
+async function sendOTP(email, otp) {
+  const mailOptions = {
+    from: "taherbidda786@gmail.com",
+    to: email,
+    subject: "Your OTP for Verification",
+    text: `Your OTP is: ${otp}`,
+  };
+  try {
+    await transporter.sendMail(mailOptions);
+    return true;
+  } catch (error) {
+    console.error("Error sending email:", error);
+    return false;
+  }
+}
 
 export const authRouter = createTRPCRouter({
   register: publicProcedure
@@ -34,12 +62,20 @@ export const authRouter = createTRPCRouter({
       return { user: input }
     }),
 
-  sendVerificationOTP: publicProcedure
+
+    sendVerificationOTP: publicProcedure
     .input(z.object({ email: z.string().email() }))
     .mutation(async ({ input }) => {
-      //send otp to email use any email service provider
+      const otp = Math.floor(100000 + Math.random() * 900000);
+      const success = await sendOTP(input.email, otp.toString());
 
-      return { success: true }
+      if (!success) {
+        throw new Error("Failed to send OTP");
+      }
+
+      // You might want to store the OTP in the database or cache for verification later
+
+      return { success: true };
     }),
 
   verifyEmailWithOTP: publicProcedure

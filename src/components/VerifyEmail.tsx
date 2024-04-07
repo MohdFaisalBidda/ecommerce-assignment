@@ -1,10 +1,23 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import OTPInput from "react-otp-input";
+import { api } from "~/trpc/react";
 
 function VerifyEmail() {
+  const router = useRouter();
+  // const { email } = router.query;
+  const sendVerificationOTPMutation =
+    api.auth.sendVerificationOTP.useMutation();
+
   const [otp, setOtp] = useState("");
+  // const [verifyEmail] = useMutation(sendOTP);
+
+  const handleVerify = async () => {
+    sendVerificationOTPMutation.mutateAsync({ email: "biddafaisal@gmail.com" });
+  };
+
   return (
     <div className="my-10 flex w-full items-center justify-center">
       <div className="h-full max-h-[691px] w-full max-w-[576px] rounded-[20px] border border-[#C1C1C1] p-14">
@@ -12,7 +25,7 @@ function VerifyEmail() {
           Verify your email
         </h1>
         <div className="flex w-full flex-col items-center justify-center gap-y-1 text-center">
-          <p className="text-base font-normal text-center text-black">
+          <p className="text-center text-base font-normal text-black">
             Enter the 8 digit code you have received on
           </p>
           <span className="font-medium">swa***@gmail.com</span>
@@ -36,7 +49,10 @@ function VerifyEmail() {
           />
         </div>
         <div className="mt-10 w-auto max-w-[456px] rounded-md bg-black p-4 text-center text-white">
-          <button className="text-center text-base font-medium capitalize">
+          <button
+            onClick={handleVerify}
+            className="text-center text-base font-medium capitalize"
+          >
             VERIFY
           </button>
         </div>

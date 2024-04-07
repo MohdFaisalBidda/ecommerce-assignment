@@ -34,7 +34,7 @@ function Login() {
       toast.success("User logged in Successfully!");
       login(userData);
       if (typeof window === "undefined") return null;
-      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("user", JSON.stringify(userData.user));
       setCred({ email: "", password: "" });
       router.push("/");
       setLoading(false);

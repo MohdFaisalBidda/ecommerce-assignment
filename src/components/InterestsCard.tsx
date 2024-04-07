@@ -10,7 +10,12 @@ import {
 
 function InterestsCard() {
   const user = getLocalStorageKeyValue("user");
-  console.log(user?.user?.email);
+  const userEmail = user?.email;
+
+  // Load the checked items for the current user from localStorage
+  const storedCheckedItems = getLocalStorageKeyValue(userEmail) || {};
+  console.log(storedCheckedItems);
+  
 
   const data = [
     { title: "Wireless Bluetooth Earbuds" },
@@ -89,32 +94,34 @@ function InterestsCard() {
 
   const [checkedItemsPerPage, setCheckedItemsPerPage] = useState(() => {
     const storedCheckedItemsPerPage =
-      getLocalStorageKeyValue("checkedItemsPerPage") || {};
+      getLocalStorageKeyValue(user?.email) || {};
     return storedCheckedItemsPerPage;
   });
 
   useEffect(() => {
     setLocalStorageKeyValue(
-      "checkedItemsPerPage",
+      user?.email,
       JSON.stringify(checkedItemsPerPage),
     );
   }, [checkedItemsPerPage]);
 
   const handleCheckboxChange = (index: number) => {
     setCheckedItemsPerPage((prevState) => {
-      console.log("prevState:", prevState);
-      const currentPageCheckedItems = [...(prevState[currPage] || Array(itemsPerPage).fill(false))];
-      console.log("currentPageCheckedItems (before):", currentPageCheckedItems);
+      const currentPageCheckedItems = [
+        ...(prevState[currPage] || Array(itemsPerPage).fill(false))
+      ];
       currentPageCheckedItems[index] = !currentPageCheckedItems[index];
-      console.log("currentPageCheckedItems (after):", currentPageCheckedItems);
       
+      // Update the checked items for the current page
       const updatedState = { ...prevState, [currPage]: currentPageCheckedItems };
-      console.log("updatedState:", updatedState);
-      setLocalStorageKeyValue("checkedItemsPerPage", JSON.stringify(updatedState));
+      
+      // Update the checked items for the current user in localStorage
+      setLocalStorageKeyValue(userEmail, JSON.stringify(updatedState));
       
       return updatedState;
     });
   };
+
 
   const renderItems = () => {
     const startIndex = (currPage - 1) * itemsPerPage;

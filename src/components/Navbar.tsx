@@ -6,11 +6,15 @@ import {
   MdOutlineKeyboardArrowLeft,
   MdOutlineKeyboardArrowRight,
 } from "react-icons/md";
-import { deleteLocalStorageKeyValue } from "~/utils/localstorage";
+import {
+  deleteLocalStorageKeyValue,
+  getLocalStorageKeyValue,
+} from "~/utils/localstorage";
 import { useRouter } from "next/navigation";
 
-function Navbar() { 
-  const router =useRouter()
+function Navbar() {
+  const router = useRouter();
+  const user = getLocalStorageKeyValue("user");
   return (
     <>
       <div className="flex h-[100px] w-full flex-col justify-between bg-white py-4 lg:px-16">
@@ -18,12 +22,20 @@ function Navbar() {
           <ul className="flex w-full items-center justify-end gap-x-10">
             <li className="text-xs font-normal">Help</li>
             <li className="text-xs font-normal">Orders & Returns</li>
-            <li onClick={()=>{
-              deleteLocalStorageKeyValue("user")
-              router.push("/login")
-            }} className="text-xs font-normal">
-              Hi,John
+            <li className="text-xs font-normal">
+              {user?.name ? `Hi,${user?.name}` : "Hi,John"}
             </li>
+            {user && (
+              <li
+                onClick={() => {
+                  deleteLocalStorageKeyValue("user");
+                  router.push("/login");
+                }}
+                className="text-xs font-normal cursor-pointer"
+              >
+                Logut
+              </li>
+            )}
           </ul>
         </div>
         <div className="flex h-full items-center justify-between px-4 pt-4 lg:px-0">

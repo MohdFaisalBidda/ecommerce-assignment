@@ -1,23 +1,33 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import OTPInput from "react-otp-input";
+import { toast } from "react-toastify";
 import { api } from "~/trpc/react";
+import { getLocalStorageKeyValue } from "~/utils/localstorage";
 
 function VerifyEmail() {
   const router = useRouter();
-  // const { email } = router.query;
-  const sendVerificationOTPMutation =
-    api.auth.sendVerificationOTP.useMutation();
+  const queryParams = useSearchParams();
+  const otpData = queryParams.get("otpData");
+  const parsedData = JSON.parse(otpData);
+  console.log("otpData:", parsedData.success);
+  const user = getLocalStorageKeyValue("user");
 
   const [otp, setOtp] = useState("");
-  // const [verifyEmail] = useMutation(sendOTP);
 
   const handleVerify = async () => {
-    sendVerificationOTPMutation.mutateAsync({ email: "biddafaisal@gmail.com" });
+    try {
+      if (otp.length !== 8 || parseInt(otp) !== parsedData.success) {
+        throw new Error("Incorrect OTP");
+      }
+      toast.success("Email Verified Successfully!");
+      router.push("/");
+    } catch (error) {
+      toast.error("Invalid OTP");
+    }
   };
-
   return (
     <div className="my-10 flex w-full items-center justify-center">
       <div className="h-full max-h-[691px] w-full max-w-[576px] rounded-[20px] border border-[#C1C1C1] p-14">
@@ -28,7 +38,7 @@ function VerifyEmail() {
           <p className="text-center text-base font-normal text-black">
             Enter the 8 digit code you have received on
           </p>
-          <span className="font-medium">swa***@gmail.com</span>
+          <span className="font-medium">{user?.email}</span>
         </div>
         <div className="my-16 flex flex-col gap-y-1">
           <h1>Code</h1>

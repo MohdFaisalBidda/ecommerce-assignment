@@ -7,12 +7,15 @@ import { api } from "~/trpc/react";
 import { FaSpinner } from "react-icons/fa6";
 import Login from "./Login";
 import Navbar from "./Navbar";
+import { setLocalStorageKeyValue } from "~/utils/localstorage";
 
 function Register() {
   const [cred, setCred] = useState({ name: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const registerUserMutation = api.auth.register.useMutation();
+  const sendVerificationOTPMutation =
+    api.auth.sendVerificationOTP.useMutation();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -28,7 +31,14 @@ function Register() {
       console.log(cred);
       setLoading(true);
       await registerUserMutation.mutateAsync(cred);
-      router.push("/VerifyEmail");
+      setLocalStorageKeyValue("user", JSON.stringify(cred));
+      const otpData = await sendVerificationOTPMutation.mutateAsync({
+        email: cred.email,
+      });
+      console.log(otpData);
+      router.push(
+        `/VerifyEmail?otpData=${encodeURIComponent(JSON.stringify(otpData))}`,
+      );
       setCred({ name: "", email: "", password: "" });
       toast.success("User created Successfully!");
       setLoading(false);

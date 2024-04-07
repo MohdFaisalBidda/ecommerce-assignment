@@ -15,7 +15,7 @@ export default function WrapperComponent({ children }: any) {
   useEffect(() => {
     if (typeof window !== "undefined") {
       if (user === null) {
-        if (!pathname.includes("/login") && !pathname.includes("/register")) {
+        if (!pathname.includes("/login") && !pathname.includes("/register") && !pathname.includes("/VerifyEmail")) {
           router.replace("/login");
         }
       } else {

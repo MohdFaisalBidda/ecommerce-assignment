@@ -7,18 +7,13 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { db } from "~/server/db";
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.tickpluswise.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: 'user-e89730d4bf88484d',
-    pass: 'f7(fXX22G<upi@FHNW@8rHUhV5obH%=SM8/?<a^@TX$y%62{YH',
-  },
+  host: 'smtp.freesmtpservers.com',
+  port: 25,
 });
 
 async function sendOTP(email, otp) {
   const mailOptions = {
-    from: "taherbidda786@gmail.com",
+    from: "notify@example.com",
     to: email,
     subject: "Your OTP for Verification",
     text: `Your OTP is: ${otp}`,
@@ -63,10 +58,10 @@ export const authRouter = createTRPCRouter({
     }),
 
 
-    sendVerificationOTP: publicProcedure
+  sendVerificationOTP: publicProcedure
     .input(z.object({ email: z.string().email() }))
     .mutation(async ({ input }) => {
-      const otp = Math.floor(100000 + Math.random() * 900000);
+      const otp = Math.floor(10000000 + Math.random() * 90000000);
       const success = await sendOTP(input.email, otp.toString());
 
       if (!success) {
@@ -75,7 +70,7 @@ export const authRouter = createTRPCRouter({
 
       // You might want to store the OTP in the database or cache for verification later
 
-      return { success: true };
+      return { success: otp };
     }),
 
   verifyEmailWithOTP: publicProcedure
@@ -94,7 +89,7 @@ export const authRouter = createTRPCRouter({
       }
 
       return {
-       ctx
+        ctx
       };
     })
 });
